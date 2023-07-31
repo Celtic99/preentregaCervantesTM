@@ -1,8 +1,6 @@
-function Bienvenido(nombre){
-    console.log(`Bienvenido ${nombre}.`)
-}
+let mensaje =  localStorage.getItem('bienvenida');
+console.log(mensaje);
 
-(Bienvenido('Usuario'));   
 
 
 const bienvenida ="BIENVENID@ A LA LISTA DE TAREAS DEL DIA A DIA"   // aparece una sola vez
@@ -19,6 +17,7 @@ let tareas = []
 eventos()
 function eventos(){
     formulario.addeventlistener("submit",agregartarea)
+    
 }
 
 function agregartarea(e){
@@ -26,18 +25,24 @@ function agregartarea(e){
     const tarea = document.querySelector("#tarea").value
 
     if(tarea == ""){
-        error("ERROR! Por favor escribir una tarea");
-        return;
+        error("ERROR! Por favor escribir una tarea")
+        return
     }   
     
-    mostrartareasHTML()
+    const objetotareas = {
+        id : Date.now(),
+        tarea
+    }
 
+    tareas = [... tareas, objetotareas]
+    console.log(tareas)
+    mostrartareasHTML() 
     formulario.reset()
 }
 
-function error(errorr){
+function error(error){
     const errormensaje = document.createElement("p")
-    errormensaje.textContent= errorr
+    errormensaje.textContent= error
 
     const contenedor= document.querySelector("#contenedor")
     contenedor.appendChild(errormensaje)
@@ -48,10 +53,29 @@ function error(errorr){
 }
 
 
-function mostrartarea(){
+function mostrartareashtml(){
+    limpiarhtml()
     tareas.forEach(tarea =>{
+        const btnborrar = document.createElement("button")
+        btnborrar.textContent = "BORRAR" 
+        btnborrar.onclick = () => borrartarea(tarea.id)
         const li = document.createElement("li")
-        li.innerText= tarea
+        li.innerText= tarea.tarea
+        li.appendChild(btnborrar)
         listadetareas.appendChild(li)
     })
 }
+
+function borrartarea(id){   
+    tareas = tareas.filter(tarea => tarea.id != id) 
+    mostrartareashtml() 
+}
+
+function limpiarhtml(){
+    while(listadetareas.firstChild){
+        listadetareas.removeChild(listadetareas.firstChild)
+    }
+
+}
+
+
